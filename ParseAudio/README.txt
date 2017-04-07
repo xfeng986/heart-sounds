@@ -17,6 +17,12 @@ fname (audio file names)
 label (artifact, extrahls, normal, murmur, or blank for unlabeled)
 sublabel (in SetB, some recordings are noisy, and may be sublabeled as noisynormal, noisymurmur etc.) 
 
+set_a_timing.csv has columns with:
+fname 
+cycle (anywhere from 1 to 19: the heartbeat cycle that the time observation refers to. But note that in some cases cycles have been skipped.)
+sound (either S1 for systole or S2 for diastole sound)
+location (time location in number of audio samples)
+
 The SetB folder has similar and self explanatory structure.
 
 See https://www.kaggle.com/kinguistics/heartbeat-sounds for detailed descriptions. 
