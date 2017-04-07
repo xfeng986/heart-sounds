@@ -1,4 +1,4 @@
-This folders SetA and SetB contain files with the amplitude versus time of heartbeat recordings as csv files (comma delimited) with the first entry being the sample rate.
+The folders SetA and SetB contain files with the amplitude versus time of heartbeat recordings as csv files (comma delimited) with the first entry being the sample rate.
 SetA file names begin with one of the following: 
 artifact (contains excess noise and heartbeats may not be able to be extracted) 
 Aunlabelledtest (this is test data to characterize as one of the four other categories) 
