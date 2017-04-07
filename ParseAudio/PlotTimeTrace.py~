@@ -11,14 +11,14 @@ from matplotlib.pyplot import specgram
 from scipy import signal
 
 #Set path where csv files of concern are
-file_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetA/'
+save_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetA/'
 
 #This can be modified to loop through as subset of the csv files if you want to view more than one
 
 csvname='murmur__201108222227.csv'
 
 #append path to csv to the csv file name
-fname=file_path+csvname
+fname=save_path+csvname
 
 #Create a Pandas dataframe from the csv note the column header will be the sample rate when using this approach
 df=pd.read_csv(fname,delimiter=',')
