@@ -13,7 +13,7 @@ from scipy import signal
 #Set path where csv files of concern are
 file_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetA/'
 
-for filename in os.listdir(save_path):
+for filename in os.listdir(file_path):
     
     if filename.startswith('normal'):
         csvname=filename
