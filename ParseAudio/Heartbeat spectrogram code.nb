@@ -1,0 +1,280 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      9752,        270]
+NotebookOptionsPosition[      8898,        240]
+NotebookOutlinePosition[      9253,        256]
+CellTagsIndexPosition[      9210,        253]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " code to create specgtrograms of the heartbeat sounds, and export them as \
+videos.  Video editing software is needed to add the audio track to the \
+output video file.\n\nImport sound file and extract the data from the sound \
+object"
+}], "Text",
+ CellChangeTimes->{{3.700836031060671*^9, 3.700836035466016*^9}, {
+  3.700836578659157*^9, 3.7008366032545757`*^9}, {3.700837105382866*^9, 
+  3.7008371620462503`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"test1", "=", 
+   RowBox[{
+   "Import", "[", 
+    "\"\</Users/Ben1/Documents/Mathematica stuff/Neural Network Side \
+Project/Heartbeat project/Sample audio files/normal__201102260502.wav\>\"", 
+    "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"test1Data", "=", 
+   RowBox[{"test1", "\[LeftDoubleBracket]", 
+    RowBox[{"1", ",", "1", ",", "1"}], "\[RightDoubleBracket]"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.700836055335634*^9, 3.700836058432901*^9}, 
+   3.700836608668118*^9}],
+
+Cell["Visualize the raw data", "Text",
+ CellChangeTimes->{{3.700836090170003*^9, 3.7008360923673773`*^9}, {
+  3.700836618342704*^9, 3.700836619182639*^9}}],
+
+Cell[BoxData[
+ RowBox[{"ListLinePlot", "[", 
+  RowBox[{"test1Data", ",", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", 
+   RowBox[{"ImageSize", "\[Rule]", "700"}], ",", 
+   RowBox[{"AspectRatio", "\[Rule]", 
+    RowBox[{"1", "/", "4"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.700419254457724*^9, 3.70041928277059*^9}, {
+   3.700419392262143*^9, 3.700419397058429*^9}, {3.7004264788291407`*^9, 
+   3.700426481590023*^9}, {3.700426535180723*^9, 3.7004265520314713`*^9}, 
+   3.7004267378198023`*^9}],
+
+Cell["Take the autocorrelation and visualize (if desired)", "Text",
+ CellChangeTimes->{{3.700836110295291*^9, 3.700836116934249*^9}, {
+  3.700836623694193*^9, 3.7008366468349667`*^9}, {3.70083719321959*^9, 
+  3.7008371998753157`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ac1", "=", 
+   RowBox[{"ListCorrelate", "[", 
+    RowBox[{"test1Data", ",", "test1Data", ",", "1", ",", "0"}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{"ListLinePlot", "[", 
+  RowBox[{"ac1", ",", 
+   RowBox[{"PlotRange", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"-", "2"}], ",", "2"}], "}"}]}], ",", 
+   RowBox[{"ImageSize", "\[Rule]", "700"}], ",", 
+   RowBox[{"AspectRatio", "\[Rule]", 
+    RowBox[{"1", "/", "3"}]}]}], "]"}]}], "Input",
+ CellChangeTimes->{3.7008366524959497`*^9}],
+
+Cell["\<\
+Calculate spectrogram (using bin sizes of 1/200th of the array length) and \
+then normalize\
+\>", "Text",
+ CellChangeTimes->{{3.700836150389175*^9, 3.700836162364703*^9}, {
+  3.700836244553092*^9, 3.7008362778066483`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"spec1", "=", 
+   RowBox[{"Transpose", "[", 
+    RowBox[{"Abs", "[", 
+     RowBox[{"Chop", "[", 
+      RowBox[{"SpectrogramArray", "[", 
+       RowBox[{"test1Data", ",", 
+        RowBox[{"Round", "[", 
+         RowBox[{
+          RowBox[{"Length", "[", "test1Data", "]"}], "/", "200"}], "]"}]}], 
+       "]"}], "]"}], "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"spec1", "=", 
+   RowBox[{"spec1", "/", 
+    RowBox[{"Max", "[", "spec1", "]"}]}]}], ";"}]}], "Input"],
+
+Cell["\<\
+Convert the spectrogram amplitudes to colors using the \
+\[OpenCurlyDoubleQuote]SunsetColors\[CloseCurlyDoubleQuote] scheme, so that \
+we can display this with the Image[] function, which is much faster than \
+ListDensityPlot.  Note that we have used the 1/4th root of the amplitudes so \
+that the color scheme does not emphasize low values.\
+\>", "Text",
+ CellChangeTimes->{{3.700836170364361*^9, 3.700836200394342*^9}, {
+  3.700836662173628*^9, 3.700836811278516*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"spec1Mod", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ColorData", "[", "\"\<SunsetColors\>\"", "]"}], "[", 
+      SuperscriptBox[
+       RowBox[{"spec1", "\[LeftDoubleBracket]", 
+        RowBox[{"i", ",", "j"}], "\[RightDoubleBracket]"}], 
+       RowBox[{"1", "/", "4"}]], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{"Length", "[", "spec1", "]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", 
+       RowBox[{"Length", "[", 
+        RowBox[{
+        "spec1", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+        "]"}]}], "}"}]}], "]"}]}], ";"}]], "Input"],
+
+Cell["Visualize the spectrogram, truncating the frequency domain", "Text",
+ CellChangeTimes->{{3.700836213330399*^9, 3.700836222145535*^9}, {
+  3.700836720169548*^9, 3.700836720465993*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Image", "[", 
+  RowBox[{
+   RowBox[{"Reverse", "[", 
+    RowBox[{"spec1Mod", "\[LeftDoubleBracket]", 
+     RowBox[{"1", ";;", "500"}], "\[RightDoubleBracket]"}], "]"}], ",", 
+   RowBox[{"ImageSize", "\[Rule]", "500"}]}], "]"}]], "Input"],
+
+Cell["\<\
+Now let\[CloseCurlyQuote]s make a video that scans through the time domain.  \
+We will first save the spectrogram image as a variable so that we don\
+\[CloseCurlyQuote]t need to calculate it every frame, then we will overlay a \
+vertical line that shifts in time. We store the images for each frame in an \
+array and then export the array as a .avi file.  Note that the speed at which \
+the line moves across the image is related to the spectrogram image size and \
+the number of frames.  In this case, the image size in the horizontal \
+direction is 600, and the number of frames is 201.\
+\>", "Text",
+ CellChangeTimes->{{3.700836291622817*^9, 3.7008363747623034`*^9}, {
+  3.7008368763778553`*^9, 3.700836906801443*^9}, {3.700836952920247*^9, 
+  3.70083701946737*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"spectrogramImage", "=", 
+   RowBox[{"Image", "[", 
+    RowBox[{
+     RowBox[{"Reverse", "[", 
+      RowBox[{"spec1Mod", "\[LeftDoubleBracket]", 
+       RowBox[{"1", ";;", "500"}], "\[RightDoubleBracket]"}], "]"}], ",", 
+     RowBox[{"ImageSize", "\[Rule]", "500"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"vidList", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"Show", "[", 
+      RowBox[{"spectrogramImage", ",", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{"{", 
+         RowBox[{"White", ",", 
+          RowBox[{"Thickness", "[", "0.003", "]"}], ",", 
+          RowBox[{"Line", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{
+                FractionBox["600", "201"], "x"}], ",", "0"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{
+                FractionBox["600", "201"], "x"}], ",", "500"}], "}"}]}], 
+            "}"}], "]"}], ",", 
+          RowBox[{"Text", "[", 
+           RowBox[{"\"\<normal__201102260502.wav\>\"", ",", 
+            RowBox[{"{", 
+             RowBox[{"300", ",", "450"}], "}"}]}], "]"}]}], "}"}], "]"}]}], 
+      "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "200"}], "}"}]}], "]"}]}], ";"}]}], "Input",\
+
+ CellChangeTimes->{{3.700836382667301*^9, 3.700836382835835*^9}, {
+  3.700836921769178*^9, 3.700836937296183*^9}, {3.700837016269247*^9, 
+  3.700837017716279*^9}}],
+
+Cell["\<\
+Determine the frame rate (201 images, 6.28 second audio length --> 32.0064 \
+frames/sec).  We will use this frame rate during the export.  Note that the \
+number of frames (201) was selected so that the frame rate would end up close \
+to 30 fps.\
+\>", "Text",
+ CellChangeTimes->{{3.700836388170228*^9, 3.700836432383664*^9}, {
+  3.700837038538246*^9, 3.700837064825739*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\</Users/Ben1/Documents/Mathematica stuff/Neural Network Side \
+Project/Heartbeat project/spectrogramTest.avi\>\"", ",", "vidList", ",", 
+   RowBox[{"\"\<FrameRate\>\"", "\[Rule]", "32"}]}], "]"}]], "Input"],
+
+Cell[TextData[{
+ "Now that we have exported the video to an .avi file, we need to overlay the \
+sound file.  I use iMovie to do this, but any video editing software should \
+work.  As a side note, ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " exports a video file that has a large size.  On a Mac, just \
+double-clicking the .avi file will cause iOS to convert it to a .mov, \
+compressing as it does so."
+}], "Text",
+ CellChangeTimes->{{3.700836438462372*^9, 3.700836542970709*^9}, {
+  3.700837099007588*^9, 3.700837099176096*^9}}]
+},
+WindowSize->{808, 680},
+WindowMargins->{{Automatic, 106}, {Automatic, 26}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
+2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 482, 10, 87, "Text"],
+Cell[1043, 32, 520, 14, 97, "Input"],
+Cell[1566, 48, 155, 2, 30, "Text"],
+Cell[1724, 52, 504, 10, 28, "Input"],
+Cell[2231, 64, 234, 3, 30, "Text"],
+Cell[2468, 69, 530, 15, 46, "Input"],
+Cell[3001, 86, 232, 5, 30, "Text"],
+Cell[3236, 93, 522, 15, 46, "Input"],
+Cell[3761, 110, 480, 8, 68, "Text"],
+Cell[4244, 120, 694, 19, 56, "Input"],
+Cell[4941, 141, 189, 2, 30, "Text"],
+Cell[5133, 145, 261, 6, 28, "Input"],
+Cell[5397, 153, 779, 12, 106, "Text"],
+Cell[6179, 167, 1520, 42, 140, "Input"],
+Cell[7702, 211, 384, 7, 68, "Text"],
+Cell[8089, 220, 262, 5, 63, "Input"],
+Cell[8354, 227, 540, 11, 68, "Text"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
