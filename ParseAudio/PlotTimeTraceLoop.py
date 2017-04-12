@@ -11,11 +11,11 @@ from matplotlib.pyplot import specgram
 from scipy import signal
 
 #Set path where csv files of concern are
-file_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetA/'
+file_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetB/'
 
 for filename in os.listdir(file_path):
     
-    if filename.startswith('normal'):
+    if filename.startswith('murmur'):
         csvname=filename
 
         #append path to csv to the csv file name
