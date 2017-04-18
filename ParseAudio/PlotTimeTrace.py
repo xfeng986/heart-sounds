@@ -15,7 +15,7 @@ file_path='/Users/William/Desktop/Desktop/Projects/heart-sounds/ParseAudio/SetA/
 
 #This can be modified to loop through as subset of the csv files if you want to view more than one
 
-csvname='murmur__201108222227.csv'
+csvname='extrahls__201101241433.csv'
 
 #append path to csv to the csv file name
 fname=file_path+csvname
@@ -45,6 +45,78 @@ maxdatafilt=max(abs(datafilt))
 #Normalize filtered data
 datafilt=[x/maxdatafilt for x in datafilt]
 
+windowsize=2*int(np.floor(rate*.040/2))+1
+
+windowstep=2*int(np.floor(rate*0.020/2))+1
+
+totalsteps=int(np.floor((len(datafilt)-windowsize)/windowstep))
+print(windowsize)
+print(totalsteps)
+fftwinmat=[]
+steplist=[]
+#for i in range(0,10):
+for i in range(0,totalsteps):
+    windata=data[(0+windowstep*i):(windowsize+windowstep*i)]
+    #steplist=np.append(steplist,((windowsize+windowstep*i)/2)/rate)
+    #windata=datafilt[(0+windowstep*i):(windowsize+windowstep*i)]
+    #plt.plot(unfiltwindata,color='k')
+    #plt.plot(windata,color='r')
+    #plt.show()
+    #plt.close()
+    window=np.exp(-np.power(range(-int(np.floor(windowsize/2)),int(np.floor(windowsize/2)+1)),2)/(2*(windowsize*0.5)**2))
+    windata=np.multiply(windata,window)
+    #plt.plot(windata,color='k')
+    #plt.show()
+    #plt.close()
+    
+    
+    fftwin=abs(np.fft.rfft(windata))
+    #plt.plot(fftwin)
+    #plt.show()
+    #plt.close()
+    #plt.plot(fftwin[0:2*195])
+    #plt.show()
+    #plt.close()
+    fftlittlemat=np.matrix.transpose(np.matrix(fftwin[0:20]))
+    fftwinmat=np.append(fftwinmat,fftlittlemat)
+    fftfreq=np.fft.fftfreq(int(windowsize),1/rate)
+    fftfreq=fftfreq[0:len(fftwin)]
+#freqlist=fftfreq[0:60]
+
+
+#plt.plot()
+#plt.show()
+#plt.close()
+
+    #plt.plot(fftfreq,fftwin)
+    #plt.xlim(0,2*195)
+    #plt.show()
+    #plt.close()
+#plt.show()
+#plt.close()
+
+
+fftwinmat=np.reshape(fftwinmat,(totalsteps,20))
+
+
+mat=np.matrix.transpose(np.matrix(fftwinmat))
+
+plt.plot(mat[:,90])
+plt.show()
+plt.close()
+
+mat=mat[::-1]
+
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+plt.imshow(mat, interpolation='nearest', cmap=plt.cm.ocean)
+#plt.xticks([])
+plt.yticks([])
+#plt.xticks(range(totalsteps),steplist,fontsize=12)
+#plt.yticks(range(60),freqlist,fontsize=12)
+plt.colorbar()
+plt.show()
+
 
 #plot timeseries and spectrogram
 plt.subplot(2,1,1)
@@ -52,12 +124,15 @@ plt.plot(datafilt)
 plt.ylabel('Amplitude')
 plt.ylim(-1,1)
 plt.subplot(2,1,2)
-specgram(datafilt,Fs=1)
+#plt.imshow(mat, interpolation='nearest', cmap=plt.cm.ocean)
+#plt.colorbar()
+specgram(datafilt,Fs=2)
 plt.xlabel('Time in Sampling Units')
 plt.ylabel('Frequency')
-plt.ylim(0,0.5)
+plt.ylim(0,1)
 plt.show()
 plt.close()
 
+#print(len(datafilt))
 
 
